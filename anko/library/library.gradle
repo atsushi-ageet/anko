@@ -1,6 +1,5 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
-apply plugin: 'com.jfrog.bintray'
 apply plugin: 'maven-publish'
 
 group POM_ARTIFACT_GROUP
@@ -19,8 +18,12 @@ android {
         versionName ANKO_VERSION
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_6
-        targetCompatibility JavaVersion.VERSION_1_6
+        sourceCompatibility JavaVersion.VERSION_1_7
+        targetCompatibility JavaVersion.VERSION_1_7
+    }
+    
+    lintOptions {
+        disable 'RestrictedApi', 'WifiManagerLeak', 'NewApi'
     }
 }
 
@@ -29,6 +32,7 @@ task sourcesJar(type: Jar) {
     from android.sourceSets.main.java.srcDirs
 }
 
+afterEvaluate {
 publishing {
     publications {
         anko(MavenPublication) {
@@ -37,7 +41,7 @@ publishing {
             version ANKO_VERSION
 
             artifact sourcesJar
-            artifact bundleRelease
+            artifact bundleReleaseAar
 
             pom.withXml {
                 asNode().children().last() + {
@@ -94,25 +98,4 @@ publishing {
         maven { url "${rootProject.buildDir}/maven" }
     }
 }
-
-bintray {
-    user = System.getenv('BINTRAY_USER') ?: ""
-    key = System.getenv('BINTRAY_API_KEY') ?: ""
-
-    publications = ['anko']
-
-    dryRun = BINTRAY_DRY_RUN
-
-    pkg {
-        userOrg = BINTRAY_USER_NAME
-        repo = BINTRAY_REPO_NAME
-        name = BINTRAY_PACKAGE_NAME
-        licenses = ['Apache-2.0']
-        vcsUrl = SCM_URL
-
-        version {
-            name = ANKO_VERSION
-            released = new Date()
-        }
-    }
 }

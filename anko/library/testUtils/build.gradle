@@ -12,12 +12,6 @@ sourceSets {
 }
 
 dependencies {
-    compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-    compile 'junit:junit:4.12'
-}
-
-kotlin {
-    experimental {
-        coroutines "enable"
-    }
+    api "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    api 'junit:junit:4.12'
 }
